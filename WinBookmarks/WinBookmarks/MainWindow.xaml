@@ -1,0 +1,20 @@
+﻿<Window x:Class="WinBookmarks.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WinBookmarks"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Foreground="#FF111111">
+    <Grid Background="#FF505160">       
+        <TextBox x:Name="urlInput" HorizontalAlignment="Left" Margin="262,46,0,0" TextWrapping="Wrap" Text="https://" VerticalAlignment="Top" Width="222" RenderTransformOrigin="0.508,0.476" Height="24"/>
+        <TextBlock HorizontalAlignment="Left" Margin="228,50,0,0" TextWrapping="Wrap" Text="URL" VerticalAlignment="Top" Foreground="#FFAEBD38"/>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,104,0,0">
+            <StackPanel x:Name="StackPanel1" Margin="174,30,220,10" Background="#FF68829E" Orientation="Vertical">
+                <!--<Button Content="Button" Background="#FF60E825"/>-->
+            </StackPanel>
+        </ScrollViewer>
+        <Button Content="Add" HorizontalAlignment="Left" Margin="511,50,0,0" VerticalAlignment="Top" Click="Button_Click" Background="#FFAEBD38" Foreground="#FF333333"/>
+    </Grid>
+</Window>
