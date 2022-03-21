@@ -58,9 +58,16 @@ namespace WinBookmarks
             System.Diagnostics.Process.Start(@"c:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe", url);
         }
 
+        private void btnRemove_Click(object sender, RoutedEventArgs e)
+        {
+            string url = (string) ((Button)sender).Tag;
+            Console.WriteLine("btnRemove_Click:", url);
+            MessageBox.Show("Got Here - url:" + url);
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            AddUrlToUi(urlInput.Text);
+            AddUrlToUi(urlInput.Text, true);
             ClearUrlField();
         }
 
@@ -69,14 +76,34 @@ namespace WinBookmarks
             urlInput.Text = "https://";
         }
 
-        private void AddUrlToUi(string url)
+        private void AddUrlToUi(string url, bool isAllowingDelete = false)
         {
+            DockPanel tempPanel = new DockPanel();
+            ///tempPanel.Orientation = Orientation.Horizontal;
+
+            // link button
             Button tempBtn = new Button();
             tempBtn.Content = url;
             tempBtn.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x68, 0x82, 0x9E));
             tempBtn.Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0xAE, 0xBD, 0x38));
             tempBtn.Click += new RoutedEventHandler(btnBookmark_Click);
-            StackPanel1.Children.Add(tempBtn);
+            tempPanel.Children.Add(tempBtn);
+
+            if (isAllowingDelete)
+            {
+                // button for delete
+                Button removeBtn = new Button();
+                removeBtn.Content = "X";
+                removeBtn.HorizontalAlignment = HorizontalAlignment.Right;
+                removeBtn.Margin = new Thickness(10);
+                removeBtn.Padding = new Thickness(5);
+                removeBtn.Click += new RoutedEventHandler(btnRemove_Click);
+                removeBtn.Tag = url;
+                tempPanel.Children.Add(removeBtn);
+            }
+
+
+            StackPanel1.Children.Add(tempPanel);
         }
     }
 }
