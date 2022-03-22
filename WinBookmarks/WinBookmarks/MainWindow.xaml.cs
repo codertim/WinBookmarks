@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace WinBookmarks
     {
         // color scheme: Crisp and Dramatic
         private XDocument xDoc;
+        private List<LinkUrl> links = new List<LinkUrl>();
 
         public MainWindow()
         {
@@ -48,7 +50,17 @@ namespace WinBookmarks
             foreach (XElement el in xElements)
             {
                 Console.WriteLine("XElement value = ", el.Value);
-                AddUrlToUi(el.Value);
+                LinkUrl linkUrl = new LinkUrl("", el.Value, false);
+                links.Add(linkUrl);
+            }
+            AddAllUrlsToUi();
+        }
+
+        private void AddAllUrlsToUi()
+        {
+            foreach (var linkUrl in links)
+            {
+                AddUrlToUi(linkUrl.Url, linkUrl.isNew);
             }
         }
 
@@ -61,12 +73,23 @@ namespace WinBookmarks
         private void btnRemove_Click(object sender, RoutedEventArgs e)
         {
             string url = (string) ((Button)sender).Tag;
-            Console.WriteLine("btnRemove_Click:", url);
-            MessageBox.Show("Got Here - url:" + url);
+            Trace.WriteLine("btnRemove_Click:", url);
+
+            // remove link from internal list
+            LinkUrl? linkToRemove = links.Find(x => x.Url == url);
+            if (linkToRemove != null)
+            {
+                links.Remove(linkToRemove);
+            }
+
+            // refresh ui
+            StackPanel1.Children.Clear();
+            AddAllUrlsToUi();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            AddUrlToListOfLinks(urlInput.Text);
             AddUrlToUi(urlInput.Text, true);
             ClearUrlField();
         }
@@ -76,16 +99,26 @@ namespace WinBookmarks
             urlInput.Text = "https://";
         }
 
+        private void AddUrlToListOfLinks(string url)
+        {
+            LinkUrl newLinkUrl = new LinkUrl(String.Empty, url, true);
+            links.Add(newLinkUrl);
+        }
+
         private void AddUrlToUi(string url, bool isAllowingDelete = false)
         {
             DockPanel tempPanel = new DockPanel();
             ///tempPanel.Orientation = Orientation.Horizontal;
+
+            int btnMargnThickness = 5;
 
             // link button
             Button tempBtn = new Button();
             tempBtn.Content = url;
             tempBtn.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x68, 0x82, 0x9E));
             tempBtn.Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0xAE, 0xBD, 0x38));
+            tempBtn.HorizontalAlignment = HorizontalAlignment.Left;
+            tempBtn.Margin = new Thickness(btnMargnThickness);
             tempBtn.Click += new RoutedEventHandler(btnBookmark_Click);
             tempPanel.Children.Add(tempBtn);
 
@@ -95,7 +128,7 @@ namespace WinBookmarks
                 Button removeBtn = new Button();
                 removeBtn.Content = "X";
                 removeBtn.HorizontalAlignment = HorizontalAlignment.Right;
-                removeBtn.Margin = new Thickness(10);
+                removeBtn.Margin = new Thickness(btnMargnThickness);
                 removeBtn.Padding = new Thickness(5);
                 removeBtn.Click += new RoutedEventHandler(btnRemove_Click);
                 removeBtn.Tag = url;
