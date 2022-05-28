@@ -30,6 +30,10 @@ namespace WinBookmarks
         {
             InitializeComponent();
 
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine("Debug mode");
+#endif
+
             // get urls from xml file
             IEnumerable<XElement> elements =  LoadXml();
             LoadBookmarkComponents(elements);
@@ -58,8 +62,9 @@ namespace WinBookmarks
 
         private void AddAllUrlsToUi()
         {
-            foreach (var linkUrl in links)
+            foreach (LinkUrl linkUrl in links)
             {
+                System.Diagnostics.Debug.WriteLine("Adding Link: " + linkUrl.ToString());
                 AddUrlToUi(linkUrl.Url, linkUrl.isNew);
             }
         }
@@ -121,6 +126,21 @@ namespace WinBookmarks
             tempBtn.Margin = new Thickness(btnMargnThickness);
             tempBtn.Click += new RoutedEventHandler(btnBookmark_Click);
             tempPanel.Children.Add(tempBtn);
+
+
+
+            var processPath = Environment.ProcessPath;
+            Console.WriteLine("processPath: " + processPath);
+            var processId = Environment.ProcessId;
+            Console.WriteLine("ProcessId: " + processId);
+
+            DateOnly dtOnly = new DateOnly(2021, 12, 25);
+            Console.WriteLine("dtOnly: " + dtOnly.ToString());
+
+            // MaxBy(); MinBy();
+            // await Parallel.ForEachAsync()
+
+
 
             if (isAllowingDelete)
             {
