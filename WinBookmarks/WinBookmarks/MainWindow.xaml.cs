@@ -54,7 +54,12 @@ namespace WinBookmarks
             foreach (XElement el in xElements)
             {
                 Console.WriteLine("XElement value = ", el.Value);
-                LinkUrl linkUrl = new LinkUrl("", el.Value, false);
+                string desciptionValue = "";
+                if (el != null && el.Attribute("description") != null)
+                {
+                    desciptionValue = el.Attribute("description").Value;
+                }
+                LinkUrl linkUrl = new LinkUrl(desciptionValue, el.Value, false);
                 links.Add(linkUrl);
             }
             AddAllUrlsToUi();
@@ -62,10 +67,11 @@ namespace WinBookmarks
 
         private void AddAllUrlsToUi()
         {
-            foreach (LinkUrl linkUrl in links)
+            var orderedLinks = links.OrderBy(link => link.Description).ToList();
+            foreach (LinkUrl linkUrl in orderedLinks)
             {
                 System.Diagnostics.Debug.WriteLine("Adding Link: " + linkUrl.ToString());
-                AddUrlToUi(linkUrl.Url, linkUrl.isNew);
+                AddUrlToUi(linkUrl.Url, linkUrl.Description, linkUrl.isNew);
             }
         }
 
@@ -95,7 +101,7 @@ namespace WinBookmarks
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             AddUrlToListOfLinks(urlInput.Text);
-            AddUrlToUi(urlInput.Text, true);
+            AddUrlToUi(urlInput.Text, "", true);   // TODO: verify middle param
             ClearUrlField();
         }
 
@@ -110,7 +116,7 @@ namespace WinBookmarks
             links.Add(newLinkUrl);
         }
 
-        private void AddUrlToUi(string url, bool isAllowingDelete = false)
+        private void AddUrlToUi(string url, string desc, bool isAllowingDelete = false)
         {
             DockPanel tempPanel = new DockPanel();
             ///tempPanel.Orientation = Orientation.Horizontal;
@@ -119,7 +125,8 @@ namespace WinBookmarks
 
             // link button
             Button tempBtn = new Button();
-            tempBtn.Content = url;
+            tempBtn.Content = desc;
+            tempBtn.ToolTip = url;
             tempBtn.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x68, 0x82, 0x9E));
             tempBtn.Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0xAE, 0xBD, 0x38));
             tempBtn.HorizontalAlignment = HorizontalAlignment.Left;
